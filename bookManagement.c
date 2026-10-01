@@ -1,8 +1,28 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
+
+#define DATASIZE 100
 
 int addBook();
-int fileData(int id, char bookTitle[20], char authorName[20]);
+int addfileData(int id, char bookTitle[50], char authorName[50]);
+int displayAllBook();
+
+//Global variable
+
+int db_count =0;
+
+struct booksInfo
+{
+   int bookId;
+   char bookTitle[50];
+   char authorName[50];
+};
+
+struct booksInfo db[DATASIZE];
+
+
+
 
 int main(){
     int choiceNumber = 0;
@@ -25,15 +45,15 @@ int main(){
             break;
 
         case 2:
-            printf("this is Search book");
+            printf("Delete Book");
             break;
         
         case 3:
-            printf("this is display Book");
+            printf("Search Book");
             break;
 
         case 4:
-            printf("this is display All Book");
+            displayAllBook();
             break;
 
         case 5:
@@ -51,7 +71,7 @@ int main(){
 
 int addBook(){
 
-            int bookId =0;
+            int bookId;
             char bookTitle[50];
             char authorName[50];
 
@@ -59,29 +79,61 @@ int addBook(){
             scanf("%d",&bookId);
 
             printf("Please enter your Book Name:");
-            scanf(" %[^\n]",&bookTitle);
+            scanf(" %[^\n]",bookTitle);
 
             printf("Please enter authorName:");
-            scanf(" %[^\n]",&authorName);
+            scanf(" %[^\n]",authorName);
 
-            fileData(bookId,bookTitle,authorName);
+            addfileData(bookId,bookTitle,authorName);
 
             printf("Your book was added successfully!");
 }
 
 
-int fileData(int id, char bookTitle[50], char authorName[50]){
+int addfileData(int id, char bookTitle[50], char authorName[50]){
     FILE *fptr = fopen("bookTitle.txt","a");
 
     if(fptr == NULL){
         printf("Your txt file has error!");
     }else{
-        fprintf(fptr,"%d %s %s\n",id,bookTitle,authorName);
+        //put book in file.
+        fprintf(fptr,"%d %s %s\n", id, bookTitle, authorName);
+
+        // put boo in db structure array.
+        db[db_count].bookId =id;
+        strcpy(db[db_count].bookTitle,bookTitle);
+        strcpy(db[db_count].authorName,authorName);
+        db_count++;
+    }
+
+
+ fclose(fptr);
+
+   
+}
+
+
+
+int displayAllBook(){
+    FILE *fptr = fopen("bookTitle.txt","r");
+    int id = 0;
+    char title[50];
+    char author[50];
+
+    if(fptr == NULL){
+        printf("Your txt file has error!");
+    }else{
+         printf("####Book List####\n");
+      while(fscanf(fptr,"%d %s %s",&id,title,author) != EOF){// read the data with fscanf
+         printf("Book Id:%d BookTitle:%s AuthorName:%s\n",id,title,author);
+      }
        
     }
 
     fclose(fptr);
 }
+
+
 
 //  cout<<"####Welcome to Our Book Management System####\n";
 //     cout<<"1. Add Book\n";
