@@ -22,9 +22,6 @@ struct booksInfo
 
 struct booksInfo db[DATASIZE];
 
-
-
-
 int main(){
     int choiceNumber = 0;
    
@@ -63,6 +60,7 @@ int main(){
 
         default:
             printf("Please enter between 1~5!");
+            exit(1);
             break;
     }
 
@@ -117,14 +115,14 @@ int addfileData(int id, char bookTitle[50], char authorName[50]){
 
 int searchBooks(){
 
-    int user_search =0;
+    char user_search[50];
     int id = 0;
     char title[50];
     char name[50];
     int bookFound =0;
 
     printf("Enter Search Book:");
-    scanf("%d",&user_search);
+    scanf(" %[^\n]",user_search);
 
     FILE *fptr = fopen("bookTitle.txt","r");
 
@@ -136,14 +134,19 @@ int searchBooks(){
             db_count++;
         }
 
-        int i =0 ;
+        int i =0;
         while(i < db_count){
-            if(db[i].bookId == user_search){
-                  printf("BookId:%d,BookTitle:%s,BookAuthorName:%s\n",db[i].bookId,db[i].bookTitle,db[i].bookTitle);
-                  break;
+            if(strcmp(db[i].bookTitle,user_search) == 0){// 0 is true , 1 is false
+                  printf("BookId:%d  BookTitle:%s  BookAuthorName:%s\n",db[i].bookId , db[i].bookTitle , db[i].authorName);
+                bookFound =1;
+                
             }
             i++;
         }
+
+      if(bookFound == 0)
+          printf("Your Book is not found!");
+      
 
     }else{
         printf("Your txt have been error!");
@@ -153,9 +156,6 @@ int searchBooks(){
     fclose(fptr);
 
 }
-
-
-
 
 //display all Books
 int displayAllBook(){
@@ -168,14 +168,20 @@ int displayAllBook(){
         printf("Your txt file has error!");
     }else{
          printf("####Book List####\n");
-      while(fscanf(fptr,"%d %s %s",&id,title,author) != EOF){// read the data with fscanf
-         printf("Book Id:%d BookTitle:%s AuthorName:%s\n",id,title,author);
+      while(fscanf(fptr,"%d %s %s",&id ,title ,author) != EOF){// read the data with fscanf
+         printf("Book Id:%d  BookTitle:%s  AuthorName:%s\n",id,title,author);
       }
        
     }
 
     fclose(fptr);
 }
+
+
+
+
+
+
 
 
 
