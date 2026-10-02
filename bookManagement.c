@@ -7,6 +7,7 @@
 int addBook();
 int addfileData(int id, char bookTitle[50], char authorName[50]);
 int displayAllBook();
+int searchBooks();
 
 //Global variable
 
@@ -49,7 +50,7 @@ int main(){
             break;
         
         case 3:
-            printf("Search Book");
+            searchBooks();
             break;
 
         case 4:
@@ -89,7 +90,7 @@ int addBook(){
             printf("Your book was added successfully!");
 }
 
-
+// add Books
 int addfileData(int id, char bookTitle[50], char authorName[50]){
     FILE *fptr = fopen("bookTitle.txt","a");
 
@@ -112,8 +113,51 @@ int addfileData(int id, char bookTitle[50], char authorName[50]){
    
 }
 
+//searchBooks
+
+int searchBooks(){
+
+    int user_search =0;
+    int id = 0;
+    char title[50];
+    char name[50];
+    int bookFound =0;
+
+    printf("Enter Search Book:");
+    scanf("%d",&user_search);
+
+    FILE *fptr = fopen("bookTitle.txt","r");
+
+    if(fptr != NULL){
+        while(fscanf(fptr,"%d %s %s",&id,title,name) != EOF){
+            db[db_count].bookId = id;
+            strcpy(db[db_count].bookTitle,title);
+            strcpy(db[db_count].authorName,name);
+            db_count++;
+        }
+
+        int i =0 ;
+        while(i < db_count){
+            if(db[i].bookId == user_search){
+                  printf("BookId:%d,BookTitle:%s,BookAuthorName:%s\n",db[i].bookId,db[i].bookTitle,db[i].bookTitle);
+                  break;
+            }
+            i++;
+        }
+
+    }else{
+        printf("Your txt have been error!");
+    }
 
 
+    fclose(fptr);
+
+}
+
+
+
+
+//display all Books
 int displayAllBook(){
     FILE *fptr = fopen("bookTitle.txt","r");
     int id = 0;
