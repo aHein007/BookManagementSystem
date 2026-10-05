@@ -8,6 +8,7 @@ int addBook();
 int addfileData(int id, char bookTitle[50], char authorName[50]);
 int displayAllBook();
 int searchBooks();
+int deleteBook();
 
 //Global variable
 
@@ -43,7 +44,7 @@ int main(){
             break;
 
         case 2:
-            printf("Delete Book");
+            deleteBook();
             break;
         
         case 3:
@@ -55,7 +56,8 @@ int main(){
             break;
 
         case 5:
-            printf("this is exits");
+            printf("#####Good Bye#####");
+            exit(1);
             break;
 
         default:
@@ -175,6 +177,52 @@ int displayAllBook(){
     }
 
     fclose(fptr);
+}
+
+
+int deleteBook(){
+    FILE *fptr = fopen("bookTitle.txt","r");
+    int id =0;
+    char title[50];
+    char author[50];
+    int db_count = 0;
+    int search_id =0;
+    int i = 0;
+    int bookFound = 1;
+
+    printf("Enter your book id to Delete:");
+    scanf("%d",&search_id);
+
+
+    if(fptr != NULL){
+        while(fscanf(fptr,"%d %s %s",&id,title,author) != EOF){
+            db[db_count].bookId = id;
+            strcpy(db[db_count].bookTitle,title);
+            strcpy(db[db_count].authorName,author);
+            db_count++;
+        }
+    }else{
+        printf("your txt file have error!");
+    }
+
+    FILE *fptr1 = fopen("bookTitle.txt","w");
+
+    while(i < db_count){
+       if(db[i].bookId != search_id){
+            fprintf(fptr1,"%d %s %s\n",db[i].bookId,db[i].bookTitle,db[i].authorName);
+            bookFound =0;
+        }
+
+    i++;
+    }
+
+    if(bookFound == 1)
+        printf("Your Delete id not found!");
+    else
+         printf("Your books have been Deleted!\n");
+
+    fclose(fptr);
+
 }
 
 
