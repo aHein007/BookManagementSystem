@@ -27,7 +27,7 @@ int main(){
     int choiceNumber = 0;
    
 
-    printf("####Welcome to Our Book Management System####\n");
+    printf("\n####Welcome to Our Book Management System####\n");
     printf("1. Add Book\n");
     printf("2. Delete Book\n");
     printf("3. Search Book\n");
@@ -62,7 +62,7 @@ int main(){
 
         default:
             printf("Please enter between 1~5!");
-            exit(1);
+            main();
             break;
     }
 
@@ -165,6 +165,10 @@ int displayAllBook(){
     int id = 0;
     char title[50];
     char author[50];
+    int recordBook = 0;
+
+    
+
 
     if(fptr == NULL){
         printf("Your txt file has error!");
@@ -172,7 +176,12 @@ int displayAllBook(){
          printf("####Book List####\n");
       while(fscanf(fptr,"%d %s %s",&id ,title ,author) != EOF){// read the data with fscanf
          printf("Book Id:%d  BookTitle:%s  AuthorName:%s\n",id,title,author);
+         recordBook =1;
       }
+
+      if(recordBook == 0)
+        printf("No record books!");
+       
        
     }
 
