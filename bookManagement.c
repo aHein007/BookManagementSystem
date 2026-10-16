@@ -87,28 +87,46 @@ int addBook(){
 
             addfileData(bookId,bookTitle,authorName);
 
-            printf("Your book was added successfully!");
+           
 }
 
 // add Books
 int addfileData(int id, char bookTitle[50], char authorName[50]){
-    FILE *fptr = fopen("bookTitle.txt","a");
+    int sameId = 0;
 
-    if(fptr == NULL){
-        printf("Your txt file has error!");
-    }else{
-        //put book in file.
-        fprintf(fptr,"%d %s %s\n", id, bookTitle, authorName);
+    //you need to read the file before file create!!
+     FILE *fptr1 = fopen("bookTitle.txt","r");
+      
+   
+       if(fptr1 != NULL){
+       int file_id=0;
+        char file_bookTitle[50];
+        char file_authorName[50];
+       
+         //id check
+        while(fscanf(fptr1,"%d %s %s",&file_id,file_bookTitle,file_authorName) != EOF){ // be careful &id scanf is obtain & when declare is int
+            if(file_id == id){//main logic
+                sameId =1;
+                printf("Your have same id Please try another again!");
+                fclose(fptr1);
+                break;
+            }
+        }
+        
+       }
+        //put data to bookTitle.txt
+       if(sameId == 0){
+            FILE *fptr = fopen("bookTitle.txt","a");
 
-        // put boo in db structure array.
-        db[db_count].bookId =id;
-        strcpy(db[db_count].bookTitle,bookTitle);
-        strcpy(db[db_count].authorName,authorName);
-        db_count++;
-    }
+            //put book in file
+            fprintf(fptr,"%d %s %s\n", id, bookTitle, authorName);
+                //main point is fclose
+             printf("Your book was added successfully!");
+            fclose(fptr);
+            }
 
-
- fclose(fptr);
+       
+    fclose(fptr1);
 
    
 }
