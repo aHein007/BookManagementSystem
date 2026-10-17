@@ -5,10 +5,11 @@
 #define DATASIZE 100
 
 int addBook();
-int addfileData(int id, char bookTitle[50], char authorName[50]);
+int addfileData(int id, char bookTitle[50], char authorName[50],char price[5]);
 int displayAllBook();
 int searchBooks();
 int deleteBook();
+int editBook();
 
 //Global variable
 
@@ -19,6 +20,7 @@ struct booksInfo
    int bookId;
    char bookTitle[50];
    char authorName[50];
+   char bookPrice[5];
 };
 
 struct booksInfo db[DATASIZE];
@@ -29,10 +31,11 @@ int main(){
 
     printf("####Welcome to Our Book Management System####\n");
     printf("1. Add Book\n");
-    printf("2. Delete Book\n");
-    printf("3. Search Book\n");
-    printf("4. Display All Books\n");
-    printf("5. Exits\n");
+    printf("2. Edit Book\n");
+    printf("3. Delete Book\n");
+    printf("4. Search Book\n");
+    printf("5. Display All Books\n");
+    printf("6. Exits\n");
 
     printf("Enter your Choice:");
     scanf("%d",&choiceNumber);
@@ -44,18 +47,22 @@ int main(){
             break;
 
         case 2:
+            editBook();
+            break;
+
+        case 3:
             deleteBook();
             break;
         
-        case 3:
+        case 4:
             searchBooks();
             break;
 
-        case 4:
+        case 5:
             displayAllBook();
             break;
 
-        case 5:
+        case 6:
             printf("#####Good Bye#####");
             exit(1);
             break;
@@ -75,6 +82,7 @@ int addBook(){
             int bookId;
             char bookTitle[50];
             char authorName[50];
+            char bookPrice[5];
 
             printf("Enter your Book id:");
             scanf("%d",&bookId);
@@ -85,13 +93,15 @@ int addBook(){
             printf("Please enter authorName:");
             scanf(" %[^\n]",authorName);
 
-            addfileData(bookId,bookTitle,authorName);
+            printf("Please enter Book Price:");
+            scanf(" %[^\n]",bookPrice);
 
-            printf("Your book was added successfully!");
+            addfileData(bookId,bookTitle,authorName,bookPrice);
+
 }
 
 // add Books
-int addfileData(int id, char bookTitle[50], char authorName[50]){
+int addfileData(int id, char bookTitle[50], char authorName[50],char price[5]){
     int sameId = 0;
 
     //you need to read the file before file create!!
@@ -100,14 +110,15 @@ int addfileData(int id, char bookTitle[50], char authorName[50]){
    
        if(fptr1 != NULL){
        int file_id=0;
-        char file_bookTitle[50];
-        char file_authorName[50];
+       char file_bookTitle[50];
+       char file_authorName[50];
+       char file_bookPrice[20];
        
          //id check
-        while(fscanf(fptr1,"%d %s %s",&file_id,file_bookTitle,file_authorName) != EOF){ // be careful &id scanf is obtain & when declare is int
+        while(fscanf(fptr1,"%d %s %s %s",&file_id,file_bookTitle,file_authorName,file_bookPrice) != EOF){ // be careful &id scanf is obtain & when declare is int
             if(file_id == id){//main logic
                 sameId =1;
-                printf("Your have same id Please try another again!");
+                printf("Your have same id Please try another!");
                 fclose(fptr1);
                 break;
             }
@@ -116,13 +127,37 @@ int addfileData(int id, char bookTitle[50], char authorName[50]){
        }
         //put data to bookTitle.txt
        if(sameId == 0){
+        int book_id =0;
+        char book_title[50];
+        char book_authorName[50];
+        char book_price[20];
+        int book_count=0;
+       
             FILE *fptr = fopen("bookTitle.txt","a");
-
             //put book in file
-            fprintf(fptr,"%d %s %s\n", id, bookTitle, authorName);
-                //main point is fclose
-             printf("Your book was added successfully!");
+            fprintf(fptr,"%d %s %s %sKs\n",id,bookTitle,authorName,price);
+            //main point is fclose
+            printf("Your book was added successfully!\n");
             fclose(fptr);
+
+            //show book list
+            FILE *fptr1 = fopen("bookTitle.txt","r");
+            while(fscanf(fptr1,"%d %s %s %s",&book_id,book_title,book_authorName,book_price) != EOF){
+            db[book_count].bookId = book_id;
+            strcpy(db[book_count].bookTitle,book_title);
+            strcpy(db[book_count].authorName,book_authorName);
+            strcpy(db[book_count].bookPrice,book_price);
+            book_count++;
+        }
+
+            printf("####Add Book List####\n");
+
+           int i =0;
+            while(i < book_count){
+                printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%s\n",db[i].bookId,db[i].bookTitle,db[i].authorName,db[i].bookPrice);
+                i++;
+            }
+            fclose(fptr1);
             }
 
        
@@ -139,6 +174,7 @@ int searchBooks(){
     int id = 0;
     char title[50];
     char name[50];
+    char price[20];
     int bookFound =0;
 
     printf("Enter Search Book:");
@@ -147,17 +183,18 @@ int searchBooks(){
     FILE *fptr = fopen("bookTitle.txt","r");
 
     if(fptr != NULL){
-        while(fscanf(fptr,"%d %s %s",&id,title,name) != EOF){
+        while(fscanf(fptr,"%d %s %s %s",&id,title,name,price) != EOF){
             db[db_count].bookId = id;
             strcpy(db[db_count].bookTitle,title);
             strcpy(db[db_count].authorName,name);
+            strcpy(db[db_count].bookPrice,strcat(price,"Ks"));
             db_count++;
         }
 
         int i =0;
         while(i < db_count){
             if(strcmp(db[i].bookTitle,user_search) == 0){// 0 is true , 1 is false
-                  printf("BookId:%d  BookTitle:%s  BookAuthorName:%s\n",db[i].bookId , db[i].bookTitle , db[i].authorName);
+                  printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%s\n",db[i].bookId , db[i].bookTitle , db[i].authorName,db[i].bookPrice);
                 bookFound =1;
                 
             }
@@ -183,13 +220,14 @@ int displayAllBook(){
     int id = 0;
     char title[50];
     char author[50];
+    char price[20];
 
     if(fptr == NULL){
         printf("Your txt file has error!");
     }else{
          printf("####Book List####\n");
-      while(fscanf(fptr,"%d %s %s",&id ,title ,author) != EOF){// read the data with fscanf
-         printf("Book Id:%d  BookTitle:%s  AuthorName:%s\n",id,title,author);
+      while(fscanf(fptr,"%d %s %s %s",&id ,title ,author,price) != EOF){// read the data with fscanf
+         printf("Book Id:%d  BookTitle:%s  AuthorName:%s BookPrice:%s\n",id,title,author,price);
       }
        
     }
@@ -207,16 +245,18 @@ int deleteBook(){
     int search_id =0;
     int i = 0;
     int bookFound = 1;
+    char price[20];
 
     printf("Enter your book id to Delete:");
     scanf("%d",&search_id);
 
 
     if(fptr != NULL){
-        while(fscanf(fptr,"%d %s %s",&id,title,author) != EOF){
+        while(fscanf(fptr,"%d %s %s %s",&id,title,author,price) != EOF){
             db[db_count].bookId = id;
             strcpy(db[db_count].bookTitle,title);
             strcpy(db[db_count].authorName,author);
+            strcpy(db[db_count].bookPrice,price);
             db_count++;
         }
     }else{
@@ -227,7 +267,7 @@ int deleteBook(){
 
     while(i < db_count){
        if(db[i].bookId != search_id){
-            fprintf(fptr1,"%d %s %s\n",db[i].bookId,db[i].bookTitle,db[i].authorName);
+            fprintf(fptr1,"%d %s %s %d\n",db[i].bookId,db[i].bookTitle,db[i].authorName,db[i].bookPrice);
             bookFound =0;
         }
 
@@ -243,6 +283,12 @@ int deleteBook(){
 
 }
 
+
+int  editBook(){
+    // FILE *fptr = fopen("bookTitle.txt","r");
+    printf("this is edit book");
+    // while(fscanf(fptr,"%s %s"))
+}
 
 
 
