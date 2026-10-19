@@ -135,7 +135,7 @@ int addfileData(int id, char bookTitle[50], char authorName[50],char price[5]){
        
             FILE *fptr = fopen("bookTitle.txt","a");
             //put book in file
-            fprintf(fptr,"%d %s %s %sKs\n",id,bookTitle,authorName,price);
+            fprintf(fptr,"%d %s %s %s\n",id,bookTitle,authorName,price);
             //main point is fclose
             printf("Your book was added successfully!\n");
             fclose(fptr);
@@ -154,7 +154,7 @@ int addfileData(int id, char bookTitle[50], char authorName[50],char price[5]){
 
            int i =0;
             while(i < book_count){
-                printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%s\n",db[i].bookId,db[i].bookTitle,db[i].authorName,db[i].bookPrice);
+                printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%sKs\n",db[i].bookId,db[i].bookTitle,db[i].authorName,db[i].bookPrice);
                 i++;
             }
             fclose(fptr1);
@@ -187,14 +187,14 @@ int searchBooks(){
             db[db_count].bookId = id;
             strcpy(db[db_count].bookTitle,title);
             strcpy(db[db_count].authorName,name);
-            strcpy(db[db_count].bookPrice,strcat(price,"Ks"));
+            strcpy(db[db_count].bookPrice,price);
             db_count++;
         }
 
         int i =0;
         while(i < db_count){
             if(strcmp(db[i].bookTitle,user_search) == 0){// 0 is true , 1 is false
-                  printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%s\n",db[i].bookId , db[i].bookTitle , db[i].authorName,db[i].bookPrice);
+                  printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%sKs\n",db[i].bookId , db[i].bookTitle , db[i].authorName,db[i].bookPrice);
                 bookFound =1;
                 
             }
@@ -285,9 +285,71 @@ int deleteBook(){
 
 
 int  editBook(){
-    // FILE *fptr = fopen("bookTitle.txt","r");
-    printf("this is edit book");
-    // while(fscanf(fptr,"%s %s"))
+    FILE *fptr = fopen("bookTitle.txt","r");
+    FILE *fptr1 = fopen("editBookTitle.txt","w");
+
+     int edit_id =0;
+     char editTitle[50];
+     char editName[50];
+     char editPrice[20];
+     int user_search=0;
+     int db_counter =0;
+     int editBookFound =0;
+
+     printf("Please Enter Edit books id:");
+     scanf("%d",&user_search);
+
+   
+    while(fscanf(fptr,"%d %s %s %s",&edit_id,editTitle,editName,editPrice) != EOF){
+
+     if(user_search == edit_id){
+       
+        printf("Book Id:%d  BookTitle:%s  AuthorName:%s BookPrice:%s\n",edit_id,editTitle,editName,editPrice);
+
+        char editBookTitle[50];
+        char editAuthorName[50];
+        char editBookPrice[50];
+
+        printf("###Edit Books Page###\n");
+
+        printf("Enter New Book Title:");
+        scanf(" %[^\n]",editBookTitle);
+        printf("Enter New Author Name:");
+        scanf(" %[^\n]",editAuthorName);
+        printf("Enter New Book Price:");
+        scanf(" %[^\n]",editBookPrice);
+
+       
+        fprintf(fptr1,"%d %s %s %s\n",edit_id,editBookTitle,editAuthorName,editPrice);
+        printf("Book updated successfully!\n");
+        editBookFound =1;
+    }else{
+         fprintf(fptr1,"%d %s %s %s\n",edit_id,editTitle,editName,editPrice);
+    }
+
+    
+
+   
+}
+
+if(editBookFound == 0)
+        printf("Book id not found in dataBase!");
+
+fclose(fptr);
+fclose(fptr1);
+
+
+remove("bookTitle.txt");// delete original file// this is delete for old data!
+rename("editBookTitle.txt","bookTitle.txt"); // forward is new file to rename original file 
+
+
+   
+    
+
+    
+    
+    
+
 }
 
 

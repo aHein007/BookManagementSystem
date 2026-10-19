@@ -1,8 +1,7 @@
 1.when the same id --> show the error //// done
 2. make the book price and show the book add list //done
-2. make Edit Book Option //
-3.search wit case sensitive
+2. make Edit Book Option //done
+3.search with case sensitive
 4.( Ascending / Descending ) with Id
-5.( A to Z ) with alphabet
-6.make the book price in db
-7.sort the book price
+5.make the book price in db //done
+6.sort the book price 
