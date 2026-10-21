@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "ctype.h"
 
 #define DATASIZE 100
 
@@ -10,11 +11,13 @@ int displayAllBook();
 int searchBooks();
 int deleteBook();
 int editBook();
+int compareTwoCharArray(char oneChar[50],char twoChar[50]);
+int charCount(char count_string[50]);
 
 //Global variable
 
 int db_count =0;
-
+int same_char =1;
 struct booksInfo
 {
    int bookId;
@@ -183,6 +186,7 @@ int searchBooks(){
     FILE *fptr = fopen("bookTitle.txt","r");
 
     if(fptr != NULL){
+        
         while(fscanf(fptr,"%d %s %s %s",&id,title,name,price) != EOF){
             db[db_count].bookId = id;
             strcpy(db[db_count].bookTitle,title);
@@ -192,8 +196,10 @@ int searchBooks(){
         }
 
         int i =0;
-        while(i < db_count){
-            if(strcmp(db[i].bookTitle,user_search) == 0){// 0 is true , 1 is false
+
+         while(i < db_count){
+          int result= compareTwoCharArray(db[i].bookTitle,user_search);
+            if(result == 0){// 0 is true , 1 is false // stricmp is not remind the upper/lower case --> so cool
                   printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%sKs\n",db[i].bookId , db[i].bookTitle , db[i].authorName,db[i].bookPrice);
                 bookFound =1;
                 
@@ -203,7 +209,7 @@ int searchBooks(){
 
       if(bookFound == 0)
           printf("Your Book is not found!");
-      
+        
 
     }else{
         printf("Your txt have been error!");
@@ -213,6 +219,57 @@ int searchBooks(){
     fclose(fptr);
 
 }
+
+//char count and compare
+int charCount(char count_string[50]){
+    
+    int str_count = 0;
+    while(str_count < 50){
+        if(count_string[str_count] == '\0'){
+            break;
+        }
+        str_count++;
+    }
+
+    return str_count;
+    
+}
+
+                        // oneChar is data base  // two char is user_search
+int compareTwoCharArray(char oneChar[50],char twoChar[50]){
+  int oneCharCount = charCount(oneChar);
+  int twoCharCount = charCount(twoChar);
+
+  if(oneCharCount >= twoCharCount){
+    for(int i =0; i <= oneCharCount - twoCharCount; i++){
+        int same =0;
+        for(int j =0 ; j < twoCharCount ; j++){
+            if(tolower(oneChar[i+j]) != tolower(twoChar[j])){
+                same =1;
+                break;
+            }
+        }
+       if(same ==0){
+        return 0;
+       }
+    }
+    return -1;
+  }
+}
+
+ // my concept with in-sensitive search
+    // if(oneCharCount >= twoCharCount){
+    //     for(int i = 0; i < oneCharCount;i++){
+    //         if(tolower(oneChar[i]) == tolower(twoChar[i])){
+    //              same_char =0;
+    //         }
+    //     }
+        
+       
+    //     return same_char;
+
+
+    // }
 
 //display all Books
 int displayAllBook(){
@@ -341,16 +398,9 @@ fclose(fptr1);
 
 remove("bookTitle.txt");// delete original file// this is delete for old data!
 rename("editBookTitle.txt","bookTitle.txt"); // forward is new file to rename original file 
-
-
-   
-    
-
-    
-    
-    
-
 }
+
+
 
 
 
