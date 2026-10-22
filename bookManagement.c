@@ -198,8 +198,8 @@ int searchBooks(){
         int i =0;
 
          while(i < db_count){
-          int result= compareTwoCharArray(db[i].bookTitle,user_search);
-            if(result == 0){// 0 is true , 1 is false // stricmp is not remind the upper/lower case --> so cool
+          int titleSearch= compareTwoCharArray(db[i].bookTitle,user_search);
+            if(titleSearch == 0){// 0 is true , 1 is false // stricmp is not remind the upper/lower case --> so cool
                   printf("BookId:%d  BookTitle:%s  BookAuthorName:%s BookPrice:%sKs\n",db[i].bookId , db[i].bookTitle , db[i].authorName,db[i].bookPrice);
                 bookFound =1;
                 
@@ -249,9 +249,9 @@ int compareTwoCharArray(char oneChar[50],char twoChar[50]){
                 break;
             }
         }
-       if(same ==0){
+       if(same == 0)
         return 0;
-       }
+       
     }
     return -1;
   }
@@ -278,14 +278,55 @@ int displayAllBook(){
     char title[50];
     char author[50];
     char price[20];
+    int user_sort=0;
+    char sort_permission[1];
 
     if(fptr == NULL){
         printf("Your txt file has error!");
     }else{
          printf("####Book List####\n");
       while(fscanf(fptr,"%d %s %s %s",&id ,title ,author,price) != EOF){// read the data with fscanf
+
+        db[db_count].bookId = id;
+        strcpy(db[db_count].bookTitle,title);
+        strcpy(db[db_count].authorName,author);
+        strcpy(db[db_count].bookPrice,price);
+        db_count++;
+
          printf("Book Id:%d  BookTitle:%s  AuthorName:%s BookPrice:%s\n",id,title,author,price);
       }
+
+      printf("Do you want to Sort the Data(y/n):");
+      scanf("%s",sort_permission);
+
+      if(sort_permission[0] == 'y' || sort_permission[0] == 'Y' ){
+        printf("1. id\n");
+        printf("2. Price\n");
+        printf("Choose the number:");
+        scanf("%d",&user_sort);
+
+        if(user_sort == 1){
+           for(int i = 0; i <= db_count-1;i++){
+                for(int j =i+1; j< db_count ; j++){
+                    int temp=db[i].bookId;
+                    if(db[i].bookId > db[j].bookId){
+                         //-->db swap
+                         struct booksInfo db_temp =db[i];
+                         db[i] = db[j];
+                         db[j] =db_temp;
+                         //-->db swap
+                    }
+                }
+             printf("Book Id:%d  BookTitle:%s  AuthorName:%s BookPrice:%sKs\n",db[i].bookId,db[i].bookTitle,db[i].authorName,db[i].bookPrice);
+           }
+        }else{
+            printf("this is a price sorted!");
+        }
+      }else{
+        exit(1);
+      }
+
+      
        
     }
 
