@@ -4,7 +4,7 @@
 3.search with case sensitive and SubStringSearch // done
 4.make the book price in db //done
 5.( Ascending / Descending ) with Id in display all book // done
-6.( Ascending / Descending )sort the book price in display all book 
+6.( Ascending / Descending )sort the book price in display all book //done 
 
 
 
