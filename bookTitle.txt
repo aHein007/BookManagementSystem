@@ -1,5 +1,7 @@
-1 html ps.hyper
-2 css cascation
-3 javaScript javahyper
-4 vue.js evenyou
-5 php ph.ps
+4 html ps.hyper 4000
+6 css cassCassing 6000
+1 javaScript ps.j 5000
+3 php ps.ph 9000
+5 laravel ps.lara 10000
+2 VueAndJs interia 3000
+10 gozillaUpdate PhinKaungUPdate 100
